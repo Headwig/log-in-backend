@@ -2,33 +2,37 @@
   include("config.php");
    session_start();
 $db = mysqli_connect("localhost","root","","login");
-   if($_SERVER["REQUEST_METHOD"] == "POST") {
-      // username and password sent from form        
-      $myusername = mysqli_real_escape_string($db,$_POST['username']);
 
-        $sql = "SELECT password FROM db WHERE username = '$myusername'";
+   if($_SERVER["REQUEST_METHOD"] == "POST") {
+      // username and password sent from form 
+      
+      $myusername = mysqli_real_escape_string($db,$_POST['username']);
+      $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
+       #echo $myusername . "   <br> ".$mypassword;
+      
+    $sql = "SELECT id FROM db WHERE username = '$myusername' and password = '$mypassword'";
       $result = mysqli_query($db,$sql);
        $row=mysqli_fetch_assoc($result);
+       #echo $row['id'];
       $count = mysqli_num_rows($result);
+       
      if(mysqli_num_rows($result)==1)
     {
-                  echo "<div class='imgcontainer' >";
-                    echo $row['password'];
-                                 echo "</div>";
+                echo $myusername . "   <br> ".$mypassword;
+                    $_SESSION["username"]="$myusername";
 
 
-      }
-    else 
-    {
-                            echo "<div class='imgcontainer' >";
-                            echo "No such username found ! ";
-                            echo "</div>";
+         header("location: welcome.php");
+      }else {
+         $error;
+         echo "<div class='imgcontainer' >";
+            echo "Your Username or Password is invalid . Please try again ." ;
+             
+             echo "</div>";
 
-        
      }
    }
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -36,7 +40,7 @@ $db = mysqli_connect("localhost","root","","login");
 </head>
     
 <title>Log In here !</title>
-    <style>
+<style>
 form {
         align-content: center;
     text-align: center;
@@ -53,22 +57,33 @@ input[type=text], input[type=password] {
     align-content: center;
     text-align: center;
 }
-
 button {
     align-content: center;
     text-align:center;
-    background-color: transparent;
-    padding: 14px 14px ;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 14px;
     margin: 8px 0;
+    border: none;
     cursor: pointer;
     width: 8%;
-    border: solid black;
     font-weight: 3px;
 }
 
 button:hover {
     opacity: 0.8;
-    background-color: lawngreen;
+}
+
+.butt {
+
+    align-content: center;
+    text-align: center;
+    padding: 14px 14px;
+    margin: 8px 0
+}
+
+.butt:hover {
+    opacity: 0.8;
 }
 
 
@@ -77,7 +92,7 @@ button:hover {
     text-align: center;
     margin: 24px 0 12px 0;
     font-family: fantasy;
-    color:black blueviolet;
+    color:midnightblue;
 }
 
 img.avatar {
@@ -86,6 +101,8 @@ img.avatar {
     body{
         margin: 0;
         padding: 0;
+        background-size: 110% 120%;
+        background-repeat: no-repeat;
     }
 
 .container {
@@ -114,20 +131,20 @@ span.psw {
     }
 
 }
-    @media screen and (max-height: 1080px) {
+    @media screen and (max-height: 539px) {
         body{
-            background-repeat: repeat;
-        }
+            background-size: 200% 200%;
+        
 
 }
 </style>
-    
+
 <body>
 <form action="" method="post">
   <div class="imgcontainer">
     <img src="logo.png" alt="Avatar" class="avatar">
       <br>
-            <h3 style="font-family:cursive;">Who hard did you keep the password ? Ha Ha  ! </h3>
+    <h3 style="font-family:cursive;">Log in and avail all of the features we offer for free ! </h3>
 
   </div>
 
@@ -136,15 +153,17 @@ span.psw {
     <label><b>Username</b></label>
     <input type="text"  name="username" required>
       <br><br><br>
-       <button type="submit">Retrieve Password</button>
+    <label><b>Password</b></label>
+    <input type="password"  name="password" required>
+      <br><br><br>
+    <button type="submit" >Login</button>
       <br><br>
-        <a href="login.php">Return to Log in !</a>
+            <a href="forgetpw.php" class="butt">Forgot Password</a>
 
       <br><br>
-  </div> 
+    <input type="checkbox" checked="checked"> Remember me
+  </div>    
     </form>
-    
-    
 </body>
 
 
